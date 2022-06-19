@@ -196,7 +196,7 @@ let main _ =
   Silk.NET.Input.Sdl.SdlInput.RegisterPlatform()
   Silk.NET.Input.Glfw.GlfwInput.RegisterPlatform()
   let resolver = Silk.NET.Core.Loader.PathResolver.Default :?> Silk.NET.Core.Loader.DefaultPathResolver
-  resolver.Resolvers = [|
+  resolver.Resolvers <- [|
       Silk.NET.Core.Loader.DefaultPathResolver.PassthroughResolver
       Silk.NET.Core.Loader.DefaultPathResolver.LinuxVersioningResolver
       Silk.NET.Core.Loader.DefaultPathResolver.MacVersioningResolver
@@ -205,7 +205,6 @@ let main _ =
       //Silk.NET.Core.Loader.DefaultPathResolver.RuntimesFolderResolver
       Silk.NET.Core.Loader.DefaultPathResolver.NativePackageResolver
   |] .ToList()
-  Silk.NET.Core.Loader.PathResolver.Default = resolver
   let window = Window.Create(options)
   window.add_Load (load window)
   window.add_Render render
