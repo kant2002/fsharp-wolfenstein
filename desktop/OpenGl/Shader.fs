@@ -25,8 +25,8 @@ let loadShader (gl:GL) (shaderType:ShaderType) path =
     Error $"Unable to compile shader: {error}"
   
 let createShader (gl:GL) shaderName =
-  let vertexShaderResult = loadShader gl ShaderType.VertexShader $"Shaders/{shaderName}.vert"
-  let fragmentShaderResult = loadShader gl ShaderType.FragmentShader $"Shaders/{shaderName}.frag"
+  let vertexShaderResult = loadShader gl ShaderType.VertexShader ("Shaders/" + shaderName + ".vert")
+  let fragmentShaderResult = loadShader gl ShaderType.FragmentShader ($"Shaders/" + shaderName + ".frag")
   match vertexShaderResult, fragmentShaderResult with
   | Ok vertexShader, Ok fragmentShader ->
     let handle = gl.CreateProgram()

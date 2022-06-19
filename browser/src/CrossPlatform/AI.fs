@@ -57,13 +57,25 @@ let getNextState canSeePlayer enemy =
       ] |> List.random
     ) ()
   | _ -> enemy.State
+
+let getStateString state =
+  match state with
+  | EnemyStateType.Standing -> "Standing"
+  | EnemyStateType.Ambushing -> "Ambushing"
+  | EnemyStateType.Attack -> "Attack"
+  | EnemyStateType.Path -> "Path"
+  | EnemyStateType.Pain -> "Pain"
+  | EnemyStateType.Shoot -> "Shoot"
+  | EnemyStateType.Chase -> "Chase"
+  | EnemyStateType.Die -> "Die"
+  | EnemyStateType.Dead -> "Dead"
     
 let preProcess game enemy =
   // preprocess looks for state changes based on the current game world state
   let canSeePlayer = enemy |> isPlayerVisibleToEnemy game
   let newState = enemy |> getNextState canSeePlayer
   if newState <> enemy.State then
-    Utils.log $"Enemy at {enemy.BasicGameObject.Position.vX}, {enemy.BasicGameObject.Position.vY} moving from {enemy.State} to {newState}"
+    Utils.log ("Enemy at " + enemy.BasicGameObject.Position.vX.ToString() + ", " + enemy.BasicGameObject.Position.vY.ToString() + " moving from " + (getStateString enemy.State) + " to " + (getStateString newState))
     { enemy with State = newState }
   else
     enemy

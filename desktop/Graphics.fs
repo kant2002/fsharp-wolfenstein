@@ -20,7 +20,7 @@ let loadSprites _ = async {
           index
         else
           0
-      let bytes = Utils.loadAssetBytes $"Sprites.s{spriteFileIndex}.png"
+      let bytes = Utils.loadAssetBytes ("Sprites/s" + spriteFileIndex.ToString() + ".png")
       let image = SixLabors.ImageSharp.Image.Load<Rgba32> bytes
       { Image = image
         Width = image.Width

@@ -19,7 +19,7 @@ let private soundEffects =
   al.GetError() |> ignore
   
   let audioAssetName filename =
-    sprintf "Sounds.%s" filename  
+    ("Sounds/" + filename)
   
   let createAudioPlayer path =
     let bytes = Utils.loadAssetBytes path
@@ -44,7 +44,8 @@ let private soundEffects =
     
     Seq.initInfinite(fun _ -> ())
     |> Seq.scan(fun index _ ->
-      let identifier = $"{char bytes[index]}{(char) bytes[index+1]}{(char) bytes[index+2]}{(char) bytes[index+3]}"
+      //let identifier = $"{char bytes[index]}{(char) bytes[index+1]}{(char) bytes[index+2]}{(char) bytes[index+3]}"
+      let identifier = "" + (char bytes[index]).ToString() + (char bytes[index+1]).ToString() + (char bytes[index+2]).ToString() + (char bytes[index+3]).ToString() // +  $"{(char) bytes[index+2]}{(char) bytes[index+3]}"
       let index = index + 4
       let size = BinaryPrimitives.ReadInt32LittleEndian(bytes[index..index+4-1])
       let index = index + 4
@@ -120,7 +121,7 @@ let private soundEffects =
 let playSoundEffectAtVolume volume soundEffect =
   match soundEffect |> soundEffects.TryGetValue with
   | true,player -> player volume
-  | _ -> Utils.log $"Missing sound effect {soundEffect}"
+  | _ -> Utils.log ("Missing sound effect " + soundEffect.ToString())
   
 
 let playSoundEffect soundEffect = playSoundEffectAtVolume 100. soundEffect

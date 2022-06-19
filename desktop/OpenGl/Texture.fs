@@ -28,9 +28,9 @@ let createWithImage (gl:GL) (img:Image<Rgba32>) =
   let texture = { Gl = gl ; Handle = handle }
   texture |> bind
   
-  let mutable pixelSpan:Span<Rgba32> = Span<Rgba32>()
+  let mutable pixelSpan:Memory<Rgba32> = Memory<Rgba32>()
   
-  if img.TryGetSinglePixelSpan &pixelSpan then
+  if img.DangerousTryGetSinglePixelMemory &pixelSpan then
     let pixelArray = pixelSpan.ToArray()
     use ptr = fixed pixelArray
     let voidPtr = ptr |> NativePtr.toVoidPtr

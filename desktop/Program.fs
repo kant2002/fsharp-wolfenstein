@@ -1,6 +1,7 @@
 ﻿// For more information see https://aka.ms/fsharp-console-apps
 
 open System.Diagnostics
+open System.Linq
 open App
 open FSharpWolfenstein.Desktop
 open Silk.NET.OpenGL
@@ -104,9 +105,10 @@ let drawScene (image:SixLabors.ImageSharp.Image<Rgba32>) diagnosticFont graphics
     
   stopwatch.Stop()
   
-  image.Mutate(fun img ->
-    img.DrawText ($"{stopwatch.ElapsedMilliseconds}ms", diagnosticFont, Color(Rgba32(1.0f,1.0f,1.0f,1.0f)), PointF(8.0f,8.0f)) |> ignore
-  )
+  //image.Mutate(fun img ->
+  //  img.DrawText (stopwatch.ElapsedMilliseconds.ToString() + "ms", diagnosticFont, Color(Rgba32(1.0f,1.0f,1.0f,1.0f)), PointF(8.0f,8.0f)) |> ignore
+  //  //img.DrawText ($"{stopwatch.ElapsedMilliseconds}ms", diagnosticFont, Color(Rgba32(1.0f,1.0f,1.0f,1.0f)), PointF(8.0f,8.0f)) |> ignore
+  //)
   
   let endTime = stopwatch.ElapsedMilliseconds
   firingHitGameObjectIndexOption
@@ -117,7 +119,7 @@ let initScene (renderData:RenderData) () =
 let load (window:IWindow) _ =
   let gl = GL.GetApi(window)
   let fontCollection = FontCollection()
-  let fontFamily = fontCollection.Install("Fonts/8-bit-hud.ttf")
+  let fontFamily = fontCollection.Add("Fonts/8-bit-hud.ttf")
   let renderData =
     { SpriteRenderer = SpriteRenderer.create gl (float32 screenWidth) (float32 screenHeight)
       Gl = gl
@@ -193,6 +195,17 @@ let main _ =
   options.Title <- "F# Wolfenstein"
   Silk.NET.Input.Sdl.SdlInput.RegisterPlatform()
   Silk.NET.Input.Glfw.GlfwInput.RegisterPlatform()
+  let resolver = Silk.NET.Core.Loader.PathResolver.Default :?> Silk.NET.Core.Loader.DefaultPathResolver
+  resolver.Resolvers = [|
+      Silk.NET.Core.Loader.DefaultPathResolver.PassthroughResolver
+      Silk.NET.Core.Loader.DefaultPathResolver.LinuxVersioningResolver
+      Silk.NET.Core.Loader.DefaultPathResolver.MacVersioningResolver
+      Silk.NET.Core.Loader.DefaultPathResolver.BaseDirectoryResolver
+      Silk.NET.Core.Loader.DefaultPathResolver.MainModuleDirectoryResolver
+      //Silk.NET.Core.Loader.DefaultPathResolver.RuntimesFolderResolver
+      Silk.NET.Core.Loader.DefaultPathResolver.NativePackageResolver
+  |] .ToList()
+  Silk.NET.Core.Loader.PathResolver.Default = resolver
   let window = Window.Create(options)
   window.add_Load (load window)
   window.add_Render render
